@@ -1,5 +1,5 @@
-main: main.o shuttle.o myobject.o
-	g++ -o main main.o shuttle.o myobject.o \
+main: main.o shuttle.o myobject.o bomb.o
+	g++ -o main main.o shuttle.o myobject.o bomb.o \
 	-framework sfml-window -framework sfml-graphics -framework sfml-system -framework sfml-audio \
 	&& rm main.o shuttle.o myobject.o
 
@@ -11,6 +11,9 @@ shuttle.o: shuttle.cpp shuttle.h
 
 myobject.o: myobject.cpp myobject.h
 	g++ -c myobject.cpp
+
+bomb.o: bomb.cpp bomb.h
+	g++ -c bomb.cpp
 
 clean:
 	rm main

@@ -1,5 +1,6 @@
 #include "shuttle.h"
 #include "config.h"
+#include "bomb.h"
 
 // TODO: Define custom functions
 
@@ -26,4 +27,10 @@ void Shuttle::placeAtBottom(){
 	float x = WINDOW_WIDTH / 2 - curSize.x;
 	float y = WINDOW_HEIGHT - curSize.y;
 	Move(x, y);
+}
+
+void Shuttle::fire(sf::RenderWindow &window){
+	Bomb bomb(*this);
+	window.draw(bomb);
+	bomb.shoot();
 }

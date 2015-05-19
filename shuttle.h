@@ -11,6 +11,7 @@ public:
 	}
 	void Move(float x, float y);
 	void placeAtBottom();
+	void fire(sf::RenderWindow &window);
 private: 
 };
 

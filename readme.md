@@ -14,3 +14,4 @@ May 19, 2015
 3.Play the background music
 4.Control the plane movement with direction keys
 5.Border limit
+6.Bomb <PROBLEM: Bomb doesn't fly>

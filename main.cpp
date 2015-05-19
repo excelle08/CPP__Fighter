@@ -5,6 +5,7 @@
 #include "shuttle.h"
 #include "background.h"
 #include "config.h"
+#include "bomb.h"
 
 
 int main()
@@ -59,6 +60,7 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
                 window.close();
             }
+
         }
         // Update the window
         window.display();
