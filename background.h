@@ -6,7 +6,8 @@
 
 class Background : public MyObject {
 public:
-	Background(string bgPath="resources/images/background.png", string bgmusicPath="resources/audios/bgm.ogg") : MyObject(bgPath, sf::Vector2f(0,0)), __bgmPath(bgmusicPath){}
+	Background(string bgPath="resources/images/background.png", string bgmusicPath="resources/audios/bgm.ogg", string type="Background") : 
+		MyObject(bgPath, sf::Vector2f(0,0)), __bgmPath(bgmusicPath){}
 	~Background(){}
 	// Load music and play
 	bool loadBackMusic(){
@@ -25,6 +26,9 @@ public:
 	// Get BGM loop status
 	bool getIfLoop(){
 		return bgm.getLoop();
+	}
+	sf::SoundStream::Status getMusicState(){
+		return bgm.getStatus();
 	}
 	// Set whether to loop the BGM
 	void setLoop(bool stat){

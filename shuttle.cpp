@@ -1,6 +1,7 @@
 #include "shuttle.h"
 #include "config.h"
 #include "bomb.h"
+#include "stage.h"
 
 // TODO: Define custom functions
 
@@ -29,8 +30,8 @@ void Shuttle::placeAtBottom(){
 	Move(x, y);
 }
 
-void Shuttle::fire(sf::RenderWindow &window){
+void Shuttle::fire(){
 	Bomb bomb(*this);
-	window.draw(bomb);
+	bomb.setStage(__stage__);
 	bomb.shoot();
 }

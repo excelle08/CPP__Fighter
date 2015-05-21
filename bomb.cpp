@@ -1,7 +1,14 @@
 #include "bomb.h"
+#include "stage.h"
+
+void Bomb::thisMove(float x, float y){
+	move(x, y);
+	pos_Y += y;
+	pos_X += x;
+}
 
 void Bomb::shoot(float speed){
-	for(int i=0; i<=100; i++){
-		Move(0, -speed);
-	}
+	thisMove(0, -speed);
+	__stage__->drawOnce(this);
+	std::cout<<pos_Y<<std::endl;
 }

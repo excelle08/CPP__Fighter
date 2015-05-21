@@ -1,13 +1,16 @@
-main: main.o shuttle.o myobject.o bomb.o
-	g++ -o main main.o shuttle.o myobject.o bomb.o \
+main: main.o stage.o shuttle.o myobject.o bomb.o
+	g++ -o main main.o stage.o shuttle.o myobject.o bomb.o \
 	-framework sfml-window -framework sfml-graphics -framework sfml-system -framework sfml-audio \
-	&& rm main.o shuttle.o myobject.o
+	#&& rm main.o shuttle.o myobject.o
 
 main.o: main.cpp config.h
-	g++ -c main.cpp 
+	g++ -c main.cpp
+
+stage.o: stage.cpp stage.h
+	g++ -c stage.cpp
 
 shuttle.o: shuttle.cpp shuttle.h
-	g++ -c shuttle.cpp
+	g++ -c shuttle.cpp 
 
 myobject.o: myobject.cpp myobject.h
 	g++ -c myobject.cpp
