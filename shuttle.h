@@ -2,6 +2,7 @@
 #define SHUTTLE_H
 
 #include "myobject.h"
+#include <vector>
 
 class Shuttle : public MyObject {
 public:
@@ -13,6 +14,7 @@ public:
 	void placeAtBottom();
 	void fire();
 private: 
+
 };
 
 #endif // SHUTTLE_H

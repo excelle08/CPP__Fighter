@@ -1,7 +1,7 @@
-#include "bomb.h"
+#include "enemy.h"
 #include "stage.h"
 
-void Bomb::shoot(){
+void Enemy::animate(){
 	{
 		move(_velocity);
 		//__stage__->drawOnce(*this);

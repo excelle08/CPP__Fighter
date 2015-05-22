@@ -7,7 +7,13 @@
 #include "config.h"
 #include "bomb.h"
 #include "stage.h"
+#include "enemy.h"
+#include <cstdlib>
+#include <ctime>
 
+#define RATE 11
+
+void generateEnemy(Stage *stage);
 
 int main()
 {
@@ -21,25 +27,60 @@ int main()
     Shuttle plane;
     // Create a game stage
     Stage stage(window, bg);
-    stage.appendObject(plane);
+    stage.setHero(&plane);
+    plane.placeAtBottom();
     stage.playBackMusic();
+    // Create a enemy generator thread
+    sf::Thread thread(&generateEnemy, &stage);
+    thread.launch();
     // Start the game loop
     while (window.isOpen()) {
         // Process events
         sf::Event event;
         while (window.pollEvent(event)) {
             // Close window: exit
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed){
                 window.close();
+                thread.terminate();
+            }
         }
+
         stage.load();
-        plane.placeAtBottom();
         if(window.hasFocus()){
             // Press Q to exit
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
                 window.close();
+                thread.terminate();
+                std::exit(0);
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+                Bomb b(plane, sf::Vector2f(0,-7));
+                stage.addBomb(b);
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+                plane.Move(-5, 0);
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+                plane.Move(5, 0);
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                plane.Move(0, -5);
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                plane.Move(0, 5);
             }
         }
     }
     return EXIT_SUCCESS;
+}
+
+void generateEnemy(Stage *stage){
+    std::srand(std::time(0));
+    while(true){
+        int random_var = std::rand();
+        Enemy e(sf::Vector2f(random_var%400, 0));
+        e.setVelocity(sf::Vector2f(0,3));
+        stage->addEnemy(e);
+        sf::sleep(sf::milliseconds(3000));
+    }
 }

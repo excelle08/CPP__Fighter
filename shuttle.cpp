@@ -1,7 +1,8 @@
 #include "shuttle.h"
 #include "config.h"
-#include "bomb.h"
 #include "stage.h"
+#include "bomb.h"
+#include <SFML/System.hpp>
 
 // TODO: Define custom functions
 
@@ -31,7 +32,9 @@ void Shuttle::placeAtBottom(){
 }
 
 void Shuttle::fire(){
-	Bomb bomb(*this);
+	Bomb bomb(*this, sf::Vector2f(0,-5));
 	bomb.setStage(__stage__);
 	bomb.shoot();
+	///sf::Thread thread(&Bomb::shoot, &bomb);
+	//thread.launch();
 }

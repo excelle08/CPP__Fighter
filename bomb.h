@@ -6,19 +6,16 @@
 
 class Bomb : public MyObject {
 public:
-	Bomb(Shuttle &src, string textureFilePath="resources/images/bomb.png", string type="Bomb") 
-	: MyObject(textureFilePath, 
-				sf::Vector2f(src.getPosition().x + src.getObjSize().x / 2, 
-							 src.getPosition().y)), 
-	  pos_X(src.getPosition().x), pos_Y(src.getPosition().y) {
+	Bomb(Shuttle &src, sf::Vector2f velocity, string textureFilePath="resources/images/bomb.png", string type="Bomb") 
+	: MyObject(textureFilePath, sf::Vector2f(0, 0), type), _src(src), _velocity(velocity){
+		setPosition(src.getPosition().x + src.getObjSize().x / 2, src.getPosition().y);
 	}
 	~Bomb(){
 	}
-	void shoot(float speed=5);
+	void shoot();
 private:
-	void thisMove(float x, float y);
-	float pos_X;
-	float pos_Y;
+	Shuttle _src;
+	sf::Vector2f _velocity;
 };
 
 #endif // BOMB_H

@@ -13,7 +13,7 @@
 using namespace std;
 
 class Stage;
-class MyObject : public sf::Drawable, public sf::Transformable {
+class MyObject : public sf::Sprite {
 public:
 	MyObject(string textureFilePath, sf::Vector2f objPosition, string type="Object", bool bindKeyboardEvent=false);
 	~MyObject(){
@@ -21,10 +21,17 @@ public:
 	}
 	// Move functions requires RELATIVE displacement value.
 	virtual void Move(float x, float y){
+		m_position.x += x;
+		m_position.y += y;
 		move(x, y);
+
 	}
 	sf::Vector2u getObjSize(){
-		return m_texture.getSize();
+		return sf::Vector2u(getTextureRect().width, getTextureRect().height);
+	}
+	// The original method getPosition() and getOrigin() sometimes returns wrong value(like zero)”
+	sf::Vector2f getObjPos(){
+		return m_position;
 	}
 	string getType(){
 		return __type__;
@@ -35,18 +42,29 @@ public:
 	void setStage(Stage *s){
 		__stage__ = s;
 	}
+	void kill(){
+		isAlive = false;
+	}
 	bool getKeyboardBinding(){
 		return listenKeyEvent;
 	}
+	bool getLifeState(){
+		return isAlive;
+	}
+	void reloadTexture(){
+		setTexture(m_texture);
+	}
+	virtual bool isOutOfWindow();
 protected:
     Stage *__stage__;
-private:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    sf::Sprite m_sprite;
     sf::Texture m_texture;
-    sf::Texture m_vertices;
+private:
+	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    
+    sf::Vector2f m_position;
     string __type__;
     bool listenKeyEvent;
+    bool isAlive;
 };
 
 #endif // MYOBJECT_H
