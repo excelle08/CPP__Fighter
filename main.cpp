@@ -14,6 +14,7 @@
 #define RATE 11
 
 void generateEnemy(Stage *stage);
+void timer(Stage *stage);
 
 int main()
 {
@@ -33,6 +34,13 @@ int main()
     // Create a enemy generator thread
     sf::Thread thread(&generateEnemy, &stage);
     thread.launch();
+    // This is a timer thread
+    sf::Thread th_timer(&timer, &stage);
+    th_timer.launch();
+    // Collision tester
+    sf::Thread th_coltest(&Stage::collisionTest, &stage);
+    th_coltest.launch();
+
     // Start the game loop
     while (window.isOpen()) {
         // Process events
@@ -42,6 +50,8 @@ int main()
             if (event.type == sf::Event::Closed){
                 window.close();
                 thread.terminate();
+                th_timer.terminate();
+                th_coltest.terminate();
             }
         }
 
@@ -69,6 +79,12 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
                 plane.Move(0, 5);
             }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)){
+                stage.stopBackMusic();
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)){
+                stage.playBackMusic();
+            }
         }
     }
     return EXIT_SUCCESS;
@@ -79,8 +95,16 @@ void generateEnemy(Stage *stage){
     while(true){
         int random_var = std::rand();
         Enemy e(sf::Vector2f(random_var%400, 0));
-        e.setVelocity(sf::Vector2f(0,3));
+        e.setVelocity(sf::Vector2f(0,4));
         stage->addEnemy(e);
-        sf::sleep(sf::milliseconds(3000));
+        sf::sleep(sf::milliseconds(1000));
+    }
+}
+
+void timer(Stage *stage){
+    while(true){
+        // TODO: Add timing funcs
+        stage->increAvaliableBomb();
+        sf::sleep(sf::milliseconds(500));
     }
 }

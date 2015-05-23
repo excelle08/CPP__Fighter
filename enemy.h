@@ -2,6 +2,8 @@
 #define ENEMY_H
 
 #include "myobject.h"
+#include <SFML/Audio.hpp>
+#include <SFML/System.hpp>
 
 class Enemy : public MyObject {
 public:
@@ -16,6 +18,7 @@ public:
 		_velocity = v;
 	}
 	void animate();
+	void playBoomEffect();
 private:
 	sf::Vector2f _velocity;
 };

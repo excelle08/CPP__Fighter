@@ -42,8 +42,12 @@ public:
 	void setStage(Stage *s){
 		__stage__ = s;
 	}
-	void kill(){
+	void kill(bool boom=false){
 		isAlive = false;
+		isBoomed = boom;
+	}
+	bool isExplosion(){
+		return isBoomed;
 	}
 	bool getKeyboardBinding(){
 		return listenKeyEvent;
@@ -65,6 +69,7 @@ private:
     string __type__;
     bool listenKeyEvent;
     bool isAlive;
+    bool isBoomed;
 };
 
 #endif // MYOBJECT_H
