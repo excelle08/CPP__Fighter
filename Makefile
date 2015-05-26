@@ -3,7 +3,7 @@ main: main.o stage.o shuttle.o myobject.o bomb.o enemy.o
 	-framework sfml-window -framework sfml-graphics -framework sfml-system -framework sfml-audio \
 	#&& rm main.o shuttle.o myobject.o
 
-main.o: main.cpp config.h 
+main.o: main.cpp config.h
 	g++ -c main.cpp -g 
 
 stage.o: stage.cpp stage.h 

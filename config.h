@@ -1,7 +1,30 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONFIG_Hs
+#define CONFIG_Hs
+
+#include <iostream>
+using std::string;
 
 #define WINDOW_WIDTH 480
 #define WINDOW_HEIGHT 800
 
-#endif // CONFIG_H
+namespace TextureLib {
+	static string background = "resources/images/background.png";
+	static string shuttle = "resources/images/plane.png";
+	static string enemy = "resources/images/enemy.png";
+	static string bomb = "resources/images/bomb.png";
+};
+
+namespace AudioLib {
+	static string bgm = "resources/audios/bgm.ogg";
+	static string bang = "resources/audios/bang.ogg";
+};
+
+namespace FontLib {
+	static string arial = "resources/fonts/arial.ttf";
+};
+
+namespace Config {
+	static int pointsPerEnemy = 20;
+};
+
+#endif // CONFIG_Hs

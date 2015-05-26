@@ -3,10 +3,11 @@
 
 #include "myobject.h"
 #include <vector>
+#include "config.h"
 
 class Shuttle : public MyObject {
 public:
-	Shuttle(string textureFilePath="resources/images/plane.png", sf::Vector2f initPos=sf::Vector2f(0, 0), string type="Shuttle")
+	Shuttle(string textureFilePath=TextureLib::shuttle, sf::Vector2f initPos=sf::Vector2f(0, 0), string type="Shuttle")
 		: MyObject(textureFilePath, initPos, type, true){}
 	virtual ~Shuttle(){
 	}

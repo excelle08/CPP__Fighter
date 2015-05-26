@@ -1,6 +1,7 @@
 #include "myobject.h"
 #include "stage.h"
 
+
 MyObject::MyObject(string textureFilePath, sf::Vector2f objPosition, string type, bool bindKeyboardEvent){
 	if(!m_texture.loadFromFile(textureFilePath)){
 		cout << "Error loading texture file: " << textureFilePath << endl;

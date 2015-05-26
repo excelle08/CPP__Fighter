@@ -42,7 +42,7 @@ public:
 	void setStage(Stage *s){
 		__stage__ = s;
 	}
-	void kill(bool boom=false){
+	virtual void kill(bool boom=false){
 		isAlive = false;
 		isBoomed = boom;
 	}

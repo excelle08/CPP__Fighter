@@ -1,5 +1,5 @@
 #include "shuttle.h"
-#include "config.h"
+//#include "config.h"
 #include "stage.h"
 #include "bomb.h"
 #include <SFML/System.hpp>

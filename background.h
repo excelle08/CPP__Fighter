@@ -2,11 +2,12 @@
 #define BACKGROUND_H
 
 #include "myobject.h"
+#include "config.h"
 #include <SFML/Audio.hpp>
 
 class Background : public MyObject {
 public:
-	Background(string bgPath="resources/images/background.png", string bgmusicPath="resources/audios/bgm.ogg", string type="Background") : 
+	Background(string bgPath=TextureLib::background, string bgmusicPath=AudioLib::bgm, string type="Background") : 
 		MyObject(bgPath, sf::Vector2f(0,0)), __bgmPath(bgmusicPath){}
 	~Background(){}
 	// Load music and play

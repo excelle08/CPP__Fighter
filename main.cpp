@@ -4,12 +4,14 @@
 #include <SFML/System.hpp>
 #include "shuttle.h"
 #include "background.h"
-#include "config.h"
 #include "bomb.h"
 #include "stage.h"
+#include "config.h"
 #include "enemy.h"
 #include <cstdlib>
 #include <ctime>
+#include <sstream>
+#include <iostream>
 
 #define RATE 11
 
@@ -56,6 +58,8 @@ int main()
         }
 
         stage.load();
+        int b_spd = stage.getBombSpeed();
+        int p_spd = stage.getPlaneSpeed();
         if(window.hasFocus()){
             // Press Q to exit
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
@@ -64,20 +68,20 @@ int main()
                 std::exit(0);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
-                Bomb b(plane, sf::Vector2f(0,-7));
+                Bomb b(plane, sf::Vector2f(0,-b_spd));
                 stage.addBomb(b);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-                plane.Move(-5, 0);
+                plane.Move(-p_spd, 0);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                plane.Move(5, 0);
+                plane.Move(p_spd, 0);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-                plane.Move(0, -5);
+                plane.Move(0, -p_spd);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-                plane.Move(0, 5);
+                plane.Move(0, p_spd);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)){
                 stage.stopBackMusic();
@@ -95,9 +99,10 @@ void generateEnemy(Stage *stage){
     while(true){
         int random_var = std::rand();
         Enemy e(sf::Vector2f(random_var%400, 0));
-        e.setVelocity(sf::Vector2f(0,4));
+        e.setVelocity(sf::Vector2f(0,stage->getEnemySpeed()));
         stage->addEnemy(e);
-        sf::sleep(sf::milliseconds(1000));
+        // Update time
+        sf::sleep(sf::milliseconds(stage->getEnemyGenRate()));
     }
 }
 
@@ -105,6 +110,17 @@ void timer(Stage *stage){
     while(true){
         // TODO: Add timing funcs
         stage->increAvaliableBomb();
+        // Draw text
+        using namespace std;
+        stringstream ss;
+        string score_str;
+        ss << "Score: ";
+        ss << stage->getPoints() << endl;
+        ss << "Level: ";
+        ss << stage->getLevel() << endl;
+        score_str = ss.str();
+        stage->setScoreText(score_str);
+        // Update time
         sf::sleep(sf::milliseconds(500));
     }
 }

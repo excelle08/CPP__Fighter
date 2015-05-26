@@ -1,5 +1,6 @@
 #include "stage.h"
 #include <iostream>
+#include <cstring>
 
 void Stage::setHero(Shuttle *hero){
     this->hero = hero;
@@ -54,6 +55,8 @@ void Stage::drawProperties(){
     m_window->draw(*m_bg);
     // Draw hero
     m_window->draw(*hero);
+    // Draw score text
+    m_window->draw(score);
     // Draw and move enemy shuttles
     for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end();){
         if(m_enemies.size() == 0){
@@ -102,6 +105,7 @@ void Stage::collisionTest(){
                 sf::Vector2f pos_e = e->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
                 if( (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                    points += 20;
                     playBoomEffect();
                     e->kill(true);
                     b->kill();
