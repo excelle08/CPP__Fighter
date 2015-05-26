@@ -70,6 +70,10 @@ void Stage::drawProperties(){
         } else {
             // IMPORTANT: Method erase() returns the next iterator
             // To pass the next iterator to var i will prevent from operating wild pointer.
+            if(level >= 7 || !(*i).isExplosion()){
+                // After level 7, every missed enemy costs 10 points
+                points -= 10;
+            }
             i = m_enemies.erase(i);
         }
     }
@@ -86,6 +90,21 @@ void Stage::drawProperties(){
         } else {
             i = m_bombs.erase(i);
         }
+    }
+}
+
+int Stage::getValueByLevel(int count, ...){
+    int args[count];
+    va_list a;
+    va_start(a, count);
+    for(int i=0; i<count; i++){
+        args[i] = va_arg(a, int);
+    }
+    va_end(a);
+    if(level >= count){
+        return args[count-1]; 
+    } else {
+        return args[level-1];
     }
 }
 

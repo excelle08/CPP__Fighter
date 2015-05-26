@@ -101,6 +101,11 @@ void generateEnemy(Stage *stage){
         Enemy e(sf::Vector2f(random_var%400, 0));
         e.setVelocity(sf::Vector2f(0,stage->getEnemySpeed()));
         stage->addEnemy(e);
+        // When level is greater than 2, launch bomb randomly
+        if(stage->getLevel() >= 2 && random_var % 2 == 0){
+            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()));
+            stage->addBomb(b);
+        }
         // Update time
         sf::sleep(sf::milliseconds(stage->getEnemyGenRate()));
     }
@@ -121,6 +126,6 @@ void timer(Stage *stage){
         score_str = ss.str();
         stage->setScoreText(score_str);
         // Update time
-        sf::sleep(sf::milliseconds(500));
+        sf::sleep(sf::milliseconds(250));
     }
 }

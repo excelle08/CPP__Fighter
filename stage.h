@@ -5,6 +5,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 #include <vector>
+#include <cstdarg>
 #include "myobject.h"
 #include "background.h"
 #include "enemy.h"
@@ -50,6 +51,7 @@ public:
 			return;
 		}
 		avaliableBomb ++;
+		// Every bomb consumes 5 points
 		points -= 5;
 	}
 	void setScoreText(string str){
@@ -69,21 +71,22 @@ public:
 		return level;
 	}
 	int getPlaneSpeed(){
-		return 2 + level * 2;
+		return getValueByLevel(8,5,8,10,11,12,13,13,13);
 	}
 	int getBombSpeed(){
-		return 2 + level * 3;
+		return getValueByLevel(8,5,6,7,8,9,10,10,10);
 	}
 	int getEnemySpeed(){
-		return level * 4;
+		return getValueByLevel(8,5,6,6,7,7,10,12,14);
 	}
 	int getEnemyGenRate(){
-		return 3200 / level;
+		return 1000 / level;
 	}
 	void collisionTest();
 
 private:
 	void drawProperties();
+	int getValueByLevel(int count, ...);
 	inline void keyBoardEvents(MyObject *obj);
 	sf::RenderWindow *m_window;
 	std::vector<Enemy> m_enemies;

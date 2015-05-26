@@ -27,4 +27,5 @@ namespace Config {
 	static int pointsPerEnemy = 20;
 };
 
+
 #endif // CONFIG_Hs
