@@ -154,8 +154,13 @@ void generateEnemy(Stage *stage){
         e.setVelocity(sf::Vector2f(0,stage->getEnemySpeed()));
         stage->addEnemy(e);
         // When level is greater than 2, launch bomb randomly
-        if(stage->getLevel() >= 2 && random_var % 2 == 0){
+        if(stage->getLevel() >= 2 && stage->getLevel() <= 5 && random_var % 2 == 0){
             Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2));
+            b.setColor(sf::Color::Red);
+            stage->addBomb(b);
+        } else if (stage->getLevel() >= 6 && random_var % 3 != 0){
+            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2));
+            b.setColor(sf::Color::Yellow);
             stage->addBomb(b);
         }
         // Update time

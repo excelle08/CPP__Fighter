@@ -122,7 +122,7 @@ public:
 	}
 	void reset();
 	void collisionTest();
-	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::White);
+	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::Black);
 private:
 	void drawProperties();
 	int getValueByLevel(int count, ...);
