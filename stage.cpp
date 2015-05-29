@@ -89,13 +89,23 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
-            // IMPORTANT: Method erase() returns the next iterator
-            // To pass the next iterator to var i will prevent from operating wild pointer.
-            if(level >= 7 && ((*i).isExplosion())){
-                // After level 7, every missed enemy costs 10 points
-                points -= 10;
+            if(level >= 7 && (!(*i).isExplosion())){
+               // After level 7, every missed enemy costs 10 points
+               points -= 10;
             }
-            i = m_enemies.erase(i);
+            // If out of window then die
+            if((*i).isOutOfWindow()){
+                i = m_enemies.erase(i);
+            }
+            // If a enemy is hit play explosion animation then die.
+            if(((*i).isExplosion()) && !(*i).playExplodeAnimate()){
+                // IMPORTANT: Method erase() returns the next iterator
+                // To pass the next iterator to var i will prevent from operating wild pointer.
+                i = m_enemies.erase(i);
+            } else {
+                m_window->draw(*i);
+                i++;
+            }
         }
     }
     // Draw and move bombs

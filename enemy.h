@@ -8,7 +8,7 @@
 class Enemy : public MyObject {
 public:
 	Enemy(sf::Vector2f enemyInitPos, string textureFilePath="resources/images/enemy.png", string type="Enemy") : 
-		MyObject(textureFilePath, enemyInitPos, type), _velocity(sf::Vector2f(0, 10)), ttl(24){
+		MyObject(textureFilePath, enemyInitPos, type), _velocity(sf::Vector2f(0, 10)), ttl(16){
 
 	}
 	~Enemy(){
@@ -18,10 +18,7 @@ public:
 		_velocity = v;
 	}
 	void animate();
-	int explodeAnimateTtl(){
-		ttl --;
-		return ttl;
-	}
+	bool playExplodeAnimate();
 	void playBoomEffect();
 private:
 	sf::Vector2f _velocity;

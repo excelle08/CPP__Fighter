@@ -8,7 +8,7 @@
 class Shuttle : public MyObject {
 public:
 	Shuttle(string textureFilePath=TextureLib::shuttle, sf::Vector2f initPos=sf::Vector2f(0, 0), string type="Shuttle")
-		: MyObject(textureFilePath, initPos, type, true), life(20){}
+		: MyObject(textureFilePath, initPos, type, true), life(20), ttl(16){}
 	virtual ~Shuttle(){
 	}
 	void Move(float x, float y);
