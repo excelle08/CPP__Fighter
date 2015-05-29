@@ -17,6 +17,8 @@ namespace TextureLib {
 namespace AudioLib {
 	static string bgm = "resources/audios/bgm.ogg";
 	static string bang = "resources/audios/bang.ogg";
+	static string damage = "resources/audios/bomb-04.ogg";
+	static string upgrade = "resources/audios/upgrade.wav";
 };
 
 namespace FontLib {

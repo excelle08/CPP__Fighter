@@ -24,6 +24,10 @@ public:
 	void stopBackMusic(){
 		bgm.stop();
 	}
+	// Revive BGM
+	void reviveBackMusic(){
+		bgm.play();
+	}
 	// Get BGM loop status
 	bool getIfLoop(){
 		return bgm.getLoop();

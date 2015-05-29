@@ -13,6 +13,9 @@ public:
 	~Bomb(){
 	}
 	void shoot();
+	string getSrcType(){
+		return _src.getType();
+	}
 private:
 	MyObject _src;
 	sf::Vector2f _velocity;

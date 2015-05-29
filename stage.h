@@ -15,23 +15,36 @@
 
 #define OBJECTS_MAX_VAL 8
 
+enum Status{
+	STANDBY=0,
+	START=1,
+	GAMEOVER=2,
+	HELPMSG=3
+};
+
 class Stage
 {
 public:
-
-	Stage(sf::RenderWindow &currentWindow, Background &bg, string expSoundPath=AudioLib::bang, string fontPath=FontLib::arial) : 
+	Stage(sf::RenderWindow &currentWindow, Background &bg, string expSoundPath=AudioLib::bang, string fontPath=FontLib::arial,
+		string damageSoundPath=AudioLib::damage, string upgradeSoundPath=AudioLib::upgrade) : 
 		m_window(&currentWindow), m_bg(&bg){
 		avaliableBomb = 1;
 		maxBomb = 1;
 		explosionEffectData.loadFromFile(expSoundPath);
 		explosionEff.setBuffer(explosionEffectData);
+		damageEffectData.loadFromFile(damageSoundPath);
+		damageEff.setBuffer(damageEffectData);
+		upgradeEffectData.loadFromFile(upgradeSoundPath);
+		upgradeEff.setBuffer(upgradeEffectData);
 		msgFont.loadFromFile(fontPath);
 		score.setFont(msgFont);
 		score.setColor(sf::Color(sf::Color::Red));
 		score.setPosition(sf::Vector2f(0,0));
-		score.setString("Score: 10");
-		points = 0;
+		score.setString("Score: 5      0");
+		points = 50;
 		level = 1;
+		allowSoundEffect = true;
+		framecount = 0;
 	}
 	virtual ~Stage(){
 	
@@ -42,7 +55,10 @@ public:
 	void load();
 	void playBackMusic();
 	void stopBackMusic();
+	void reviveBackMusic();
 	void playBoomEffect();
+	void playDamageEffect();
+	void playUpgradeEffect();
 	sf::Vector2u getWindowSize(){
 		return m_window->getSize();
 	}
@@ -64,7 +80,11 @@ public:
 		return maxBomb;
 	}
 	int getPoints(){
+		int level_pre = level;
 		level = points / 500 + 1;
+		if(level > level_pre){
+			playUpgradeEffect();
+		}
 		return points;
 	}
 	int getLevel(){
@@ -82,8 +102,27 @@ public:
 	int getEnemyGenRate(){
 		return 1000 / level;
 	}
+	int getPlaneLife(){
+		return hero->getLife();
+	}
+	void setGameStatus(int stat){
+		gameStatus = stat;
+	}
+	int getGameStatus(){
+		return gameStatus;
+	}
+	void disableSoundEffect(){
+		allowSoundEffect = false;
+	}
+	void enableSoundEffect(){
+		allowSoundEffect = true;
+	}
+	unsigned long int getFrameCount(){
+		return framecount;
+	}
+	void reset();
 	void collisionTest();
-
+	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::White);
 private:
 	void drawProperties();
 	int getValueByLevel(int count, ...);
@@ -94,13 +133,20 @@ private:
  	int points;
 	int level;
  	sf::SoundBuffer explosionEffectData;
+ 	sf::SoundBuffer damageEffectData;
+ 	sf::SoundBuffer upgradeEffectData;
  	sf::Font msgFont;
  	sf::Text score;
  	sf::Sound explosionEff;
+ 	sf::Sound damageEff;
+ 	sf::Sound upgradeEff;
 	Shuttle *hero;
 	Background *m_bg;
 	int avaliableBomb;
 	int maxBomb;
+	int gameStatus;
+	bool allowSoundEffect;
+	unsigned long int framecount;
 
 };
 

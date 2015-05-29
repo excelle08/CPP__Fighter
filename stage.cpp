@@ -28,6 +28,7 @@ void Stage::load(){
     drawProperties();
     // Display and finish this frame
     m_window->display();
+    framecount ++;
 }
 
 void Stage::playBackMusic(){
@@ -45,8 +46,28 @@ void Stage::stopBackMusic(){
 	m_bg->stopBackMusic();
 }
 
+void Stage::reviveBackMusic(){
+    m_bg->reviveBackMusic();
+}
+
 void Stage::playBoomEffect(){
-    explosionEff.play();
+    if(allowSoundEffect){
+        explosionEff.setVolume(50);
+        explosionEff.play();
+    }
+}
+
+void Stage::playDamageEffect(){
+    if(allowSoundEffect){
+        damageEff.play();
+    }
+}
+
+void Stage::playUpgradeEffect(){
+    if(allowSoundEffect){
+        upgradeEff.setVolume(100);
+        upgradeEff.play();
+    }
 }
 
 
@@ -70,7 +91,7 @@ void Stage::drawProperties(){
         } else {
             // IMPORTANT: Method erase() returns the next iterator
             // To pass the next iterator to var i will prevent from operating wild pointer.
-            if(level >= 7 || !(*i).isExplosion()){
+            if(level >= 7 && ((*i).isExplosion())){
                 // After level 7, every missed enemy costs 10 points
                 points -= 10;
             }
@@ -109,7 +130,6 @@ int Stage::getValueByLevel(int count, ...){
 }
 
 void Stage::collisionTest(){
-    // Collision test between bombs and enemies
     while(true){
         for(std::vector<Enemy>::iterator e = m_enemies.begin(); e != m_enemies.end(); ++e){
             if(m_enemies.size() == 0){
@@ -123,14 +143,24 @@ void Stage::collisionTest(){
                 sf::Vector2u size_b = b->getObjSize();
                 sf::Vector2f pos_e = e->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
-                if( (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                // Collision test between bombs and enemies
+                if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
                     points += 20;
                     playBoomEffect();
                     e->kill(true);
                     b->kill();
                 }
+                // Bombs and shuttle
+                sf::Vector2u size_h = hero->getObjSize();
+                sf::Vector2f pos_h = hero->getPosition();
+                if( (b->getSrcType() == "Enemy") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
+                    playDamageEffect();
+                    hero->kill();
+                    b->kill();
+                }
             }
         }
+        // Collision test between 
         sf::sleep(sf::milliseconds(50));
     }
 }
@@ -141,3 +171,27 @@ inline void Stage::keyBoardEvents(MyObject *obj){
 
 	}
 } 
+
+void Stage::reset(){
+    points = 50;
+    level = 1;
+    m_bombs.clear();
+    m_enemies.clear();
+    hero->setLife(20);
+}
+
+void Stage::drawMessage(string msg, sf::Vector2f position, int fontSize, sf::Color color){
+    // Clear previous frame
+    m_window->clear();
+    // Draw background
+    m_window->draw(*m_bg);
+    sf::Text message;
+    message.setFont(msgFont);
+    message.setColor(color);
+    message.setCharacterSize(fontSize);
+    message.setPosition(position);
+    message.setString(msg);
+    m_window->draw(message);
+    // Display
+    m_window->display();
+}
