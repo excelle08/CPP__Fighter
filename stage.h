@@ -47,6 +47,7 @@ public:
 		allowSoundEffect = true;
 		framecount = 0;
 		elementsLock = false;
+		coltestLock = false;
 	}
 	virtual ~Stage(){
 	
@@ -167,6 +168,7 @@ private:
 	int gameStatus;
 	bool allowSoundEffect;
 	bool elementsLock;
+	bool coltestLock;
 	unsigned long int framecount;
 
 };

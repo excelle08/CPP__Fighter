@@ -203,11 +203,6 @@ void timer(Stage *stage){
         ss << stage->getLevel() << endl;
         ss << "Life: ";
         ss << stage->getPlaneLife() << endl;
-        ss << "FPS: ";
-        ss << (now - before) * (1000 / stage->getShootingRate()) << endl;
-        ss << "Bomb vector: " << stage->getBombCount() << endl;
-        ss << "Enemy vector: " << stage->getEnemyCount() << endl;
-        ss << "Bonus vector: " << stage->getBonusCount() << endl;
         score_str = ss.str();
         stage->setScoreText(score_str);
 
