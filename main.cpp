@@ -8,6 +8,7 @@
 #include "stage.h"
 #include "config.h"
 #include "enemy.h"
+#include "bonus.h"
 #include <cstdlib>
 #include <ctime>
 #include <sstream>
@@ -17,6 +18,7 @@
 
 void generateEnemy(Stage *stage);
 void timer(Stage *stage);
+void generateLifeBonus(Stage *stage);
 
 int main()
 {
@@ -40,6 +42,8 @@ int main()
     sf::Thread th_timer(&timer, &stage);
     // Collision tester
     sf::Thread th_coltest(&Stage::collisionTest, &stage);
+    // Create a life-point bonus generator thread
+    sf::Thread th_bonus_life(&generateLifeBonus, &stage);
 
     // Start the game loop
     while (window.isOpen()) {
@@ -52,6 +56,7 @@ int main()
                 thread.terminate();
                 th_timer.terminate();
                 th_coltest.terminate();
+                th_bonus_life.terminate();
             }
         }
 
@@ -63,6 +68,7 @@ int main()
                 thread.launch();
                 th_coltest.launch();
                 th_timer.launch();
+                th_bonus_life.launch();
                 stage.setGameStatus(START);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)){
@@ -113,6 +119,7 @@ int main()
             thread.terminate();
             th_timer.terminate();
             th_coltest.terminate();
+            th_bonus_life.terminate();
             string msg = "  GAME OVER!!\nPress Q to end and R to replay.\n";
             stage.drawMessage(msg);
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
@@ -168,13 +175,23 @@ void generateEnemy(Stage *stage){
     }
 }
 
+void generateLifeBonus(Stage *stage){
+    std::srand(std::time(0));
+    while(true){
+        int random_var = std::rand();
+        BonusLife b(sf::Vector2f(random_var%400, 0), sf::Vector2f(0, stage->getBombSpeed()));
+        stage->addLifeBonus(b);
+        sf::sleep(sf::milliseconds(6000));
+    }
+}
+
 void timer(Stage *stage){
     while(true){
         // TODO: Add timing funcs
         stage->increAvaliableBomb();
         unsigned long int before = stage->getFrameCount();
         // Update time
-        sf::sleep(sf::milliseconds(250));
+        sf::sleep(sf::milliseconds(stage->getShootingRate()));
         // Draw text
         unsigned long int now = stage->getFrameCount();
         using namespace std;
@@ -187,7 +204,10 @@ void timer(Stage *stage){
         ss << "Life: ";
         ss << stage->getPlaneLife() << endl;
         ss << "FPS: ";
-        ss << (now - before) * 4;
+        ss << (now - before) * (1000 / stage->getShootingRate()) << endl;
+        ss << "Bomb vector: " << stage->getBombCount() << endl;
+        ss << "Enemy vector: " << stage->getEnemyCount() << endl;
+        ss << "Bonus vector: " << stage->getBonusCount() << endl;
         score_str = ss.str();
         stage->setScoreText(score_str);
 

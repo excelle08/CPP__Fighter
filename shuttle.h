@@ -26,6 +26,9 @@ public:
 	void setLife(int val){
 		life = val;
 	}
+	void addLife(){
+		life += 5;
+	}
 private: 
 	int life;
 	int ttl;

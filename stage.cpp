@@ -1,6 +1,7 @@
 #include "stage.h"
 #include <iostream>
 #include <cstring>
+#include <cstddef>
 
 void Stage::setHero(Shuttle *hero){
     this->hero = hero;
@@ -19,6 +20,11 @@ void Stage::addBomb(Bomb b){
     b.setStage(this);
     m_bombs.push_back(b);
     avaliableBomb --;
+}
+
+void Stage::addLifeBonus(BonusLife b){
+    b.setStage(this);
+    m_bonus_life.push_back(b);
 }
 
 void Stage::load(){
@@ -72,6 +78,7 @@ void Stage::playUpgradeEffect(){
 
 
 void Stage::drawProperties(){
+    elementsLock = true;
 	// Draw background
     m_window->draw(*m_bg);
     // Draw hero
@@ -84,7 +91,6 @@ void Stage::drawProperties(){
             break;
         }
         if((*i).getLifeState()){
-            //(*i).reloadTexture();
             (*i).animate();
             m_window->draw(*i);
             i++;
@@ -96,12 +102,15 @@ void Stage::drawProperties(){
             // If out of window then die
             if((*i).isOutOfWindow()){
                 i = m_enemies.erase(i);
+                std::vector<Enemy>().swap(m_enemies);
+                continue;
             }
             // If a enemy is hit play explosion animation then die.
             if(((*i).isExplosion()) && !(*i).playExplodeAnimate()){
                 // IMPORTANT: Method erase() returns the next iterator
                 // To pass the next iterator to var i will prevent from operating wild pointer.
                 i = m_enemies.erase(i);
+                std::vector<Enemy>().swap(m_enemies);
             } else {
                 m_window->draw(*i);
                 i++;
@@ -120,8 +129,25 @@ void Stage::drawProperties(){
             i++;
         } else {
             i = m_bombs.erase(i);
+            std::vector<Bomb>().swap(m_bombs);
         }
     }
+
+    // Draw life-point bonus
+    for(std::vector<BonusLife>::iterator i = m_bonus_life.begin(); i != m_bonus_life.end();){
+        if(m_bonus_life.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            i = m_bonus_life.erase(i);
+            std::vector<BonusLife>().swap(m_bonus_life);
+        }
+    }
+    elementsLock = false;
 }
 
 int Stage::getValueByLevel(int count, ...){
@@ -141,16 +167,22 @@ int Stage::getValueByLevel(int count, ...){
 
 void Stage::collisionTest(){
     while(true){
+        sf::sleep(sf::milliseconds(50));
+        if(elementsLock){
+            continue;
+        }
         for(std::vector<Enemy>::iterator e = m_enemies.begin(); e != m_enemies.end(); ++e){
             if(m_enemies.size() == 0){
                 break;
+            }  
+            if(!(*e).getLifeState()){
+                continue;
             }
             for(std::vector<Bomb>::iterator b = m_bombs.begin(); b != m_bombs.end(); ++b){
                 if(m_bombs.size() == 0){
                     break;
-                }
+                } 
                 sf::Vector2u size_e = e->getObjSize();
-                sf::Vector2u size_b = b->getObjSize();
                 sf::Vector2f pos_e = e->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
                 // Collision test between bombs and enemies
@@ -170,8 +202,30 @@ void Stage::collisionTest(){
                 }
             }
         }
-        // Collision test between 
-        sf::sleep(sf::milliseconds(50));
+        // Collision test between bonus object and bomb
+        for(std::vector<Bomb>::iterator b = m_bombs.begin(); b != m_bombs.end(); ++b){
+            if(m_bombs.size() == 0){
+                break;
+            }
+            for(std::vector<BonusLife>::iterator bn = m_bonus_life.begin(); bn != m_bonus_life.end(); ++bn){
+                if(m_bonus_life.size() == 0){
+                    break;
+                }
+                if(!(*bn).getLifeState()){
+                    continue;
+                }
+                sf::Vector2u size_e = bn->getObjSize();
+                sf::Vector2f pos_e = bn->getPosition();
+                sf::Vector2f pos_b = b->getPosition();
+                // Collision test between bombs and enemies
+                if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                    hero->addLife();
+                    playBoomEffect();
+                    bn->kill(true);
+                    b->kill();
+                }
+            }
+        }
     }
 }
 

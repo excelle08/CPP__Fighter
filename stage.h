@@ -11,6 +11,7 @@
 #include "enemy.h"
 #include "bomb.h"
 #include "shuttle.h"
+#include "bonus.h"
 #include "config.h"
 
 #define OBJECTS_MAX_VAL 8
@@ -40,11 +41,12 @@ public:
 		score.setFont(msgFont);
 		score.setColor(sf::Color(sf::Color::Red));
 		score.setPosition(sf::Vector2f(0,0));
-		score.setString("Score: 5      0");
+		score.setString("Score: 50");
 		points = 50;
 		level = 1;
 		allowSoundEffect = true;
 		framecount = 0;
+		elementsLock = false;
 	}
 	virtual ~Stage(){
 	
@@ -52,6 +54,7 @@ public:
 	void setHero(Shuttle *hero);
 	void addEnemy(Enemy e);
 	void addBomb(Bomb b);
+	void addLifeBonus(BonusLife b);
 	void load();
 	void playBackMusic();
 	void stopBackMusic();
@@ -99,11 +102,17 @@ public:
 	int getEnemySpeed(){
 		return getValueByLevel(8,5,6,6,7,7,10,12,14);
 	}
+	int getShootingRate(){
+		return getValueByLevel(8,500,300,250,250,100,100,50,50);
+	}
 	int getEnemyGenRate(){
-		return 1000 / level;
+		return getValueByLevel(8,1500,1000,500,400,300,300,200,200);
 	}
 	int getPlaneLife(){
 		return hero->getLife();
+	}
+	void setPlaneLife(int val){
+		hero->setLife(val);
 	}
 	void setGameStatus(int stat){
 		gameStatus = stat;
@@ -120,9 +129,19 @@ public:
 	unsigned long int getFrameCount(){
 		return framecount;
 	}
+	int getBombCount(){
+		return m_bombs.size();
+	}
+	int getEnemyCount(){
+		return m_enemies.size();
+	}
+	int getBonusCount(){
+		return m_bonus_life.size();
+	}
 	void reset();
 	void collisionTest();
 	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::Black);
+
 private:
 	void drawProperties();
 	int getValueByLevel(int count, ...);
@@ -130,6 +149,7 @@ private:
 	sf::RenderWindow *m_window;
 	std::vector<Enemy> m_enemies;
  	std::vector<Bomb> m_bombs;
+ 	std::vector<BonusLife> m_bonus_life;
  	int points;
 	int level;
  	sf::SoundBuffer explosionEffectData;
@@ -146,6 +166,7 @@ private:
 	int maxBomb;
 	int gameStatus;
 	bool allowSoundEffect;
+	bool elementsLock;
 	unsigned long int framecount;
 
 };
