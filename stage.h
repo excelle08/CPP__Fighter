@@ -56,7 +56,7 @@ public:
 	void addEnemy(Enemy e);
 	void addBomb(Bomb b);
 	void addLifeBonus(BonusLife b);
-	void load();
+	void loadFrame();
 	void playBackMusic();
 	void stopBackMusic();
 	void reviveBackMusic();
@@ -65,6 +65,9 @@ public:
 	void playUpgradeEffect();
 	sf::Vector2u getWindowSize(){
 		return m_window->getSize();
+	}
+	sf::Vector2f getHeroPos(){
+		return hero->getPosition();
 	}
 	void increAvaliableBomb(){
 		if(avaliableBomb >= maxBomb || points <= 0){
@@ -95,19 +98,19 @@ public:
 		return level;
 	}
 	int getPlaneSpeed(){
-		return getValueByLevel(8,5,8,10,11,12,13,13,13);
+		return getValueByLevel(8,6,6,6,7,8,9,10,10);
 	}
 	int getBombSpeed(){
 		return getValueByLevel(8,5,6,7,8,9,10,10,10);
 	}
 	int getEnemySpeed(){
-		return getValueByLevel(8,5,6,6,7,7,10,12,14);
+		return getValueByLevel(8,5,6,6,7,7,8,8,10);
 	}
 	int getShootingRate(){
-		return getValueByLevel(8,500,300,250,250,100,100,50,50);
+		return getValueByLevel(8,500,400,250,250,200,150,120,120);
 	}
 	int getEnemyGenRate(){
-		return getValueByLevel(8,1500,1000,500,400,300,300,200,200);
+		return getValueByLevel(8,2,2,3,3,3,4,5,6);
 	}
 	int getPlaneLife(){
 		return hero->getLife();

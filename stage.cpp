@@ -27,7 +27,7 @@ void Stage::addLifeBonus(BonusLife b){
     m_bonus_life.push_back(b);
 }
 
-void Stage::load(){
+void Stage::loadFrame(){
 	// Clear previous frame
 	m_window->clear();
     // Draw stage properties

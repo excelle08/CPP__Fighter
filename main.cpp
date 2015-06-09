@@ -11,6 +11,7 @@
 #include "bonus.h"
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <sstream>
 #include <iostream>
 
@@ -19,6 +20,7 @@
 void generateEnemy(Stage *stage);
 void timer(Stage *stage);
 void generateLifeBonus(Stage *stage);
+sf::Vector2f getVelocityVect(sf::Vector2f start, sf::Vector2f end, float length);
 
 int main()
 {
@@ -78,7 +80,7 @@ int main()
                 std::exit(0);
             }
         } else if (stage.getGameStatus() == START){
-            stage.load();
+            stage.loadFrame();
             int b_spd = stage.getBombSpeed();
             int p_spd = stage.getPlaneSpeed();
             if(window.hasFocus()){
@@ -162,16 +164,16 @@ void generateEnemy(Stage *stage){
         stage->addEnemy(e);
         // When level is greater than 2, launch bomb randomly
         if(stage->getLevel() >= 2 && stage->getLevel() <= 5 && random_var % 2 == 0){
-            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2));
+            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*1.5));
             b.setColor(sf::Color::Red);
             stage->addBomb(b);
         } else if (stage->getLevel() >= 6 && random_var % 3 != 0){
-            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2));
+            Bomb b(e, getVelocityVect(e.getPosition(), stage->getHeroPos(), stage->getBombSpeed()*1.5));
             b.setColor(sf::Color::Yellow);
             stage->addBomb(b);
         }
         // Update time
-        sf::sleep(sf::milliseconds(stage->getEnemyGenRate()));
+        sf::sleep(sf::milliseconds(1000 * ( ( 800 / stage->getEnemySpeed() ) / 60 ) / stage->getEnemyGenRate()));
     }
 }
 
@@ -207,4 +209,10 @@ void timer(Stage *stage){
         stage->setScoreText(score_str);
 
     }
+}
+
+sf::Vector2f getVelocityVect(sf::Vector2f start, sf::Vector2f end, float length){
+    float x = (end.x - start.x) / sqrtf((end.x - start.x)*(end.x - start.x) + (end.y-start.y)*(end.y-start.y));
+    float y = (end.y - start.y) / sqrtf((end.x - start.x)*(end.x - start.x) + (end.y-start.y)*(end.y-start.y));
+    return sf::Vector2f(x * length, y * length);
 }
