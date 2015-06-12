@@ -12,6 +12,7 @@ namespace TextureLib {
 	static string shuttle = "resources/images/plane.png";
 	static string enemy = "resources/images/enemy.png";
 	static string bomb = "resources/images/bomb.png";
+	static string bomb_enemy = "resources/images/bomb2.png";
 	static string bonusLife = "resources/images/bonus1.png";
 };
 
