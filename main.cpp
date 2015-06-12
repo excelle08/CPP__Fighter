@@ -158,6 +158,9 @@ int main()
 void generateEnemy(Stage *stage){
     std::srand(std::time(0));
     while(true){
+        if(stage->getElementsLock()){
+            continue;
+        }
         int random_var = std::rand();
         Enemy e(sf::Vector2f(random_var%400, 0));
         e.setVelocity(sf::Vector2f(0,stage->getEnemySpeed()));
@@ -183,7 +186,8 @@ void generateLifeBonus(Stage *stage){
         int random_var = std::rand();
         BonusLife b(sf::Vector2f(random_var%400, 0), sf::Vector2f(0, stage->getBombSpeed()));
         stage->addLifeBonus(b);
-        sf::sleep(sf::milliseconds(6000));
+        sf::sleep(sf::milliseconds(30000));
+
     }
 }
 

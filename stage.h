@@ -142,6 +142,9 @@ public:
 	int getBonusCount(){
 		return m_bonus_life.size();
 	}
+	bool getElementsLock(){
+		return elementsLock;
+	}
 	void reset();
 	void collisionTest();
 	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::Black);
