@@ -71,9 +71,9 @@ int main()
 
         if (stage.getGameStatus() == STANDBY){
             string msg = 
-            "  Welcome to Fighter\nPress ESC to start playing\nPress H to get help message\nPress Q to quit the game.\n";
+            "  Welcome to Fighter\nPress P to start playing\nPress I for Infinite Mode\nPress H to get help message\nPress Q to quit the game.\n";
             stage.drawMessage(msg);
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)){
                 thread.launch();
                 th_coltest.launch();
                 th_timer.launch();
@@ -81,6 +81,13 @@ int main()
                 th_super.launch();
                 stage.setGameStatus(START);
             }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
+                thread.launch();
+                th_coltest.launch();
+                th_timer.launch();
+                th_super.launch();
+                stage.setGameStatus(INFINIE);
+            }            
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)){
                 stage.setGameStatus(HELPMSG);
             }
@@ -116,6 +123,34 @@ int main()
                 }
                 if(stage.getPlaneLife() <= 0 || stage.getPoints() <= 0){
                     stage.setGameStatus(GAMEOVER);
+                }
+            }
+        } else if (stage.getGameStatus() == INFINIE){
+            stage.loadFrame();
+            int b_spd = stage.getBombSpeed();
+            int p_spd = stage.getPlaneSpeed();
+            if(window.hasFocus()){
+                // Press Q to exit
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
+                    window.close();
+                    thread.terminate();
+                    std::exit(0);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+                    Bomb b(plane, sf::Vector2f(0,-b_spd));
+                    stage.addBomb(b);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+                    plane.Move(-p_spd, 0);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+                    plane.Move(p_spd, 0);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                    plane.Move(0, -p_spd);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                    plane.Move(0, p_spd);
                 }
             }
         } else if (stage.getGameStatus() == HELPMSG){
@@ -227,8 +262,8 @@ void timer(Stage *stage){
 void generateSuper(Stage *stage){
     std::srand(std::time(0));
     while(true){
+        int random_var = std::rand();
         if(stage->getLevel() >= 3){
-            int random_var = std::rand();
             Super s(sf::Vector2f(random_var%400, 0));
             stage->addSuper(s);
         }

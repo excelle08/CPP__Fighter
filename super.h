@@ -11,6 +11,7 @@ class Super : public MyObject{
 public:
 	Super(sf::Vector2f enemyInitPos, string textureFilePath="resources/images/super.png", string type="SuperEnemy") : 
 		MyObject(textureFilePath, enemyInitPos, type), _velocity(sf::Vector2f(0, 1)), life(20){
+		txt.loadFromFile("resources/images/super.png");
 		txtDamage1.loadFromFile("resources/images/super_damage1.png");
 		txtDamage2.loadFromFile("resources/images/super_damage2.png");
 		txtDamage3.loadFromFile("resources/images/super_damage3.png");
@@ -28,6 +29,7 @@ private:
     	return sf::Vector2f(x * length, y * length);
 	}
 	sf::Vector2f _velocity;
+	sf::Texture txt;
 	sf::Texture txtDamage1;
 	sf::Texture txtDamage2;
 	sf::Texture txtDamage3;

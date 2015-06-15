@@ -21,7 +21,8 @@ enum Status{
 	STANDBY=0,
 	START=1,
 	GAMEOVER=2,
-	HELPMSG=3
+	HELPMSG=3,
+	INFINIE=4
 };
 
 class Stage

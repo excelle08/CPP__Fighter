@@ -8,8 +8,8 @@ void Stage::setHero(Shuttle *hero){
 }
 
 void Stage::addEnemy(Enemy e){
-    e.setStage(this);
     mutex.lock();
+    e.setStage(this);
     m_enemies.push_back(e);
     mutex.unlock();
 }
@@ -18,23 +18,23 @@ void Stage::addBomb(Bomb b){
     if(avaliableBomb <= 0){
         return;
     }
-    b.setStage(this);
     mutex.lock();
+    b.setStage(this);
     m_bombs.push_back(b);
     mutex.unlock();
     avaliableBomb --;
 }
 
 void Stage::addLifeBonus(BonusLife b){
-    b.setStage(this);
     mutex.lock();
+    b.setStage(this);
     m_bonus_life.push_back(b);
     mutex.unlock();
 }
 
 void Stage::addSuper(Super s){
-    s.setStage(this);
     mutex.lock();
+    s.setStage(this);
     m_super.push_back(s);
     mutex.unlock();
 }
@@ -298,7 +298,7 @@ void Stage::reset(){
     m_enemies.clear();
     m_bonus_life.clear();
     m_super.clear();
-    hero->setLife(20);
+    hero->setLife(50);
 }
 
 void Stage::drawMessage(string msg, sf::Vector2f position, int fontSize, sf::Color color){
