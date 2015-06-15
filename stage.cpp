@@ -32,6 +32,13 @@ void Stage::addLifeBonus(BonusLife b){
     mutex.unlock();
 }
 
+void Stage::addSuper(Super s){
+    s.setStage(this);
+    mutex.lock();
+    m_super.push_back(s);
+    mutex.unlock();
+}
+
 void Stage::loadFrame(){
 	// Clear previous frame
 	m_window->clear();
@@ -99,9 +106,9 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
-            if(level >= 7 && (!(*i).isExplosion())){
+            if((!(*i).isExplosion())){
                // After level 7, every missed enemy costs 10 points
-               points -= 10;
+               points -= 10 * level;
             }
             // If out of window then die
             if((*i).isOutOfWindow()){
@@ -155,6 +162,21 @@ void Stage::drawProperties(){
         } else {
             i = m_bonus_life.erase(i);
             m_bonus_life.swap(m_bonus_life);
+        }
+    }
+
+    // Draw super shuttles
+    for(std::vector<Super>::iterator i = m_super.begin(); i != m_super.end();){
+        if(m_super.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            i = m_super.erase(i);
+            m_super.swap(m_super);
         }
     }
 }

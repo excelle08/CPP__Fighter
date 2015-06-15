@@ -14,7 +14,7 @@ public:
 	void Move(float x, float y);
 	void placeAtBottom();
 	void fire();
-	void kill(){
+	void kill(bool isBoom=false){
 		if(life == 0){
 			isAlive = false;
 		}

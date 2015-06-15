@@ -12,6 +12,7 @@
 #include "bomb.h"
 #include "shuttle.h"
 #include "bonus.h"
+#include "super.h"
 #include "config.h"
 
 #define OBJECTS_MAX_VAL 8
@@ -55,6 +56,7 @@ public:
 	void addEnemy(Enemy e);
 	void addBomb(Bomb b);
 	void addLifeBonus(BonusLife b);
+	void addSuper(Super s);
 	void loadFrame();
 	void playBackMusic();
 	void stopBackMusic();
@@ -153,6 +155,7 @@ private:
 	std::vector<Enemy> m_enemies;
  	std::vector<Bomb> m_bombs;
  	std::vector<BonusLife> m_bonus_life;
+ 	std::vector<Super> m_super;
  	int points;
 	int level;
  	sf::SoundBuffer explosionEffectData;

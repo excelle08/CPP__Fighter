@@ -1,0 +1,17 @@
+   -- WELCOME --
+ 1.Use direction keys to move your shuttle.
+ 2.Press SPACE key to launch a bomb.
+ 3.Avoid bombs from enemies.
+ 4.Press = to stop BGM and - to revive it.
+ 5.Press 0 to stop sound effect and 9 to 
+   revive.
+ 6.You gain 20 points for every enemy hit.
+ 7.You spend 5 points for each bomb.
+ 8.If you missed a enemy you lose level*10
+   points.
+ 9.If your points or life goes to zero 
+   you lose.
+ 10.Shoot bonus to gain life points
+ 11.Press Q to quit.
+   -- Press Backspace to go back --
+      -- HAVE FUN --

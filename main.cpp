@@ -9,17 +9,21 @@
 #include "config.h"
 #include "enemy.h"
 #include "bonus.h"
+#include "super.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
 #define RATE 11
 
+string getHelpMessage();
 void generateEnemy(Stage *stage);
 void timer(Stage *stage);
 void generateLifeBonus(Stage *stage);
+void generateSuper(Stage *stage);
 sf::Vector2f getVelocityVect(sf::Vector2f start, sf::Vector2f end, float length);
 
 int main()
@@ -46,6 +50,8 @@ int main()
     sf::Thread th_coltest(&Stage::collisionTest, &stage);
     // Create a life-point bonus generator thread
     sf::Thread th_bonus_life(&generateLifeBonus, &stage);
+    // Create a super-enemy generator thread
+    sf::Thread th_super(&generateSuper, &stage);
 
     // Start the game loop
     while (window.isOpen()) {
@@ -59,6 +65,7 @@ int main()
                 th_timer.terminate();
                 th_coltest.terminate();
                 th_bonus_life.terminate();
+                th_super.terminate();
             }
         }
 
@@ -71,6 +78,7 @@ int main()
                 th_coltest.launch();
                 th_timer.launch();
                 th_bonus_life.launch();
+                th_super.launch();
                 stage.setGameStatus(START);
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)){
@@ -106,13 +114,12 @@ int main()
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
                     plane.Move(0, p_spd);
                 }
-                if(stage.getPlaneLife() <= 0){
+                if(stage.getPlaneLife() <= 0 || stage.getPoints() <= 0){
                     stage.setGameStatus(GAMEOVER);
                 }
             }
         } else if (stage.getGameStatus() == HELPMSG){
-            string msg = "1.Use direction keys to control your\n shuttle\n2.Press space key to launch bomb\n3.You get 20 points for each hit\n4.Every bomb costs 5 points\n5.Every 500 points you get a level up\n6.Difficulty increases as your level up\n7.After level 7 every missed enemy\n costs 10pts\n8.Avoid bombs from enemies\n9.If life goes to zero you lose\n10.Press Equal to stop BGM\n11.Press minus to revive BGM\n12.Press 0 to stop sound effect\n13.Press 9 to revive sound effect\n    HAVE FUN~\n  PRESS BACKSPACE TO GO BACK";
-            stage.drawMessage(msg);
+            stage.drawMessage(getHelpMessage());
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)){
                 stage.setGameStatus(STANDBY);
             }
@@ -122,12 +129,14 @@ int main()
             th_timer.terminate();
             th_coltest.terminate();
             th_bonus_life.terminate();
+            th_super.terminate();
             string msg = "  GAME OVER!!\nPress Q to end and R to replay.\n";
             stage.drawMessage(msg);
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
                 thread.launch();
                 th_timer.launch();
                 th_coltest.launch();
+                th_super.launch();
                 stage.reset();
                 stage.setGameStatus(START);
             }
@@ -207,9 +216,21 @@ void timer(Stage *stage){
         ss << stage->getLevel() << endl;
         ss << "Life: ";
         ss << stage->getPlaneLife() << endl;
+        ss << "FPS: ";
+        ss << (now - before) * (1000 / stage->getShootingRate());
         score_str = ss.str();
         stage->setScoreText(score_str);
 
+    }
+}
+
+void generateSuper(Stage *stage){
+    std::srand(std::time(0));
+    while(true){
+        int random_var = std::rand();
+        Super s(sf::Vector2f(random_var%400, 0));
+        stage->addSuper(s);
+        sf::sleep(sf::seconds(20));
     }
 }
 
@@ -217,4 +238,16 @@ sf::Vector2f getVelocityVect(sf::Vector2f start, sf::Vector2f end, float length)
     float x = (end.x - start.x) / sqrtf((end.x - start.x)*(end.x - start.x) + (end.y-start.y)*(end.y-start.y));
     float y = (end.y - start.y) / sqrtf((end.x - start.x)*(end.x - start.x) + (end.y-start.y)*(end.y-start.y));
     return sf::Vector2f(x * length, y * length);
+}
+
+string getHelpMessage(){
+    std::ifstream fp("helpmsg.txt", ios::in);
+    if(!fp){
+        std::cout<<"WARNING: Failed to get help message file - helpmsg.txt" << endl;
+        return "";
+    }
+    istreambuf_iterator<char> beg(fp), end;
+    string strdata(beg, end);
+    fp.close();
+    return strdata;
 }
