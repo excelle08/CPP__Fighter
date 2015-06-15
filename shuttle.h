@@ -17,6 +17,7 @@ public:
 	void kill(bool isBoom=false){
 		if(life == 0){
 			isAlive = false;
+			
 		}
 		life --;
 	}

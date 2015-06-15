@@ -227,9 +227,11 @@ void timer(Stage *stage){
 void generateSuper(Stage *stage){
     std::srand(std::time(0));
     while(true){
-        int random_var = std::rand();
-        Super s(sf::Vector2f(random_var%400, 0));
-        stage->addSuper(s);
+        if(stage->getLevel() >= 3){
+            int random_var = std::rand();
+            Super s(sf::Vector2f(random_var%400, 0));
+            stage->addSuper(s);
+        }
         sf::sleep(sf::seconds(20));
     }
 }

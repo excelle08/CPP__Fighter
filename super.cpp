@@ -1,8 +1,17 @@
 #include "super.h"
+#include "bomb.h"
+#include "config.h"
+#include "stage.h"
 
 void Super::animate(){
 	{
 		move(_velocity);
+		// Randomly output bombs
+		int ran_var = std::rand();
+		if(ran_var % 5 == 0){
+			Bomb b(*this, getVelocityVect(getPosition(), __stage__->getHeroPos(), __stage__->getBombSpeed()*1.5), TextureLib::bomb_enemy);
+			__stage__->addBomb(b);
+		}
 		if(isOutOfWindow()){
 			isAlive = false;
 		}
@@ -20,5 +29,6 @@ void Super::kill(bool isBoom){
 	}
 	if(life <= 0){
 		isAlive = false;
+		isBoomed = true;
 	}
 }

@@ -160,8 +160,10 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
+            mutex.lock();
             i = m_bonus_life.erase(i);
             m_bonus_life.swap(m_bonus_life);
+            mutex.unlock();
         }
     }
 
@@ -175,8 +177,13 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
+            mutex.lock();
             i = m_super.erase(i);
+            if((*i).isExplosion()){
+                points += 250;
+            }
             m_super.swap(m_super);
+            mutex.unlock();
         }
     }
 }
@@ -223,10 +230,11 @@ void Stage::collisionTest(){
                     e->kill(true);
                     b->kill();
                 }
+
                 // Bombs and shuttle
                 sf::Vector2u size_h = hero->getObjSize();
                 sf::Vector2f pos_h = hero->getPosition();
-                if( (b->getSrcType() == "Enemy") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
+                if( (b->getSrcType() != "Shuttle") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
                     playDamageEffect();
                     hero->kill();
                     b->kill();
@@ -248,11 +256,26 @@ void Stage::collisionTest(){
                 sf::Vector2u size_e = bn->getObjSize();
                 sf::Vector2f pos_e = bn->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
-                // Collision test between bombs and enemies
                 if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
                     hero->addLife();
                     playBoomEffect();
                     bn->kill(true);
+                    b->kill();
+                }
+            }
+            for(std::vector<Super>::iterator s = m_super.begin(); s != m_super.end(); ++s){
+                if(m_super.size() == 0){
+                    break;
+                }
+                if(!(*s).getLifeState()){
+                    continue;
+                }
+                sf::Vector2u size_e = s->getObjSize();
+                sf::Vector2f pos_e = s->getPosition();
+                sf::Vector2f pos_b = b->getPosition();
+                if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                    playBoomEffect();
+                    s->kill(true);
                     b->kill();
                 }
             }
@@ -273,6 +296,8 @@ void Stage::reset(){
     level = 1;
     m_bombs.clear();
     m_enemies.clear();
+    m_bonus_life.clear();
+    m_super.clear();
     hero->setLife(20);
 }
 

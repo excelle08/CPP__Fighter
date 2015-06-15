@@ -8,7 +8,12 @@ class Bomb : public MyObject {
 public:
 	Bomb(MyObject &src, sf::Vector2f velocity, string textureFilePath=TextureLib::bomb, string type="Bomb") 
 	: MyObject(textureFilePath, sf::Vector2f(0, 0), type), _src(src), _velocity(velocity){
-		setPosition(src.getPosition().x + src.getObjSize().x / 2, src.getPosition().y);
+		if(velocity.y <= 0){
+			setPosition(src.getPosition().x + src.getObjSize().x / 2, src.getPosition().y);
+		}
+		if(velocity.y >= 0){
+			setPosition(src.getPosition().x + src.getObjSize().x / 2, src.getPosition().y + src.getObjSize().y);
+		}
 	}
 	~Bomb(){
 	}

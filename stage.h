@@ -99,7 +99,7 @@ public:
 		return level;
 	}
 	int getPlaneSpeed(){
-		return getValueByLevel(8,6,6,6,7,8,9,10,10);
+		return getValueByLevel(8,8,8,8,9,9,10,10,11);
 	}
 	int getBombSpeed(){
 		return getValueByLevel(8,5,6,7,8,9,10,10,10);
@@ -108,10 +108,10 @@ public:
 		return getValueByLevel(8,5,6,6,7,7,8,8,10);
 	}
 	int getShootingRate(){
-		return getValueByLevel(8,500,400,250,250,200,150,120,120);
+		return getValueByLevel(8,200,150,120,120,100,80,70,60);
 	}
 	int getEnemyGenRate(){
-		return getValueByLevel(8,2,2,3,3,3,4,5,6);
+		return getValueByLevel(8,4,4,5,5,5,6,6,7);
 	}
 	int getPlaneLife(){
 		return hero->getLife();
