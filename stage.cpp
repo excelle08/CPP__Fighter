@@ -8,9 +8,10 @@ void Stage::setHero(Shuttle *hero){
 }
 
 void Stage::addEnemy(Enemy e){
-
     e.setStage(this);
+    mutex.lock();
     m_enemies.push_back(e);
+    mutex.unlock();
 }
 
 void Stage::addBomb(Bomb b){
@@ -18,13 +19,17 @@ void Stage::addBomb(Bomb b){
         return;
     }
     b.setStage(this);
+    mutex.lock();
     m_bombs.push_back(b);
+    mutex.unlock();
     avaliableBomb --;
 }
 
 void Stage::addLifeBonus(BonusLife b){
     b.setStage(this);
+    mutex.lock();
     m_bonus_life.push_back(b);
+    mutex.unlock();
 }
 
 void Stage::loadFrame(){
@@ -78,8 +83,6 @@ void Stage::playUpgradeEffect(){
 
 
 void Stage::drawProperties(){
-    elementsLock = true;
-    //std::cout << "Stage::draw::elLock: " << elementsLock << endl;
 	// Draw background
     m_window->draw(*m_bg);
     // Draw hero
@@ -101,17 +104,21 @@ void Stage::drawProperties(){
                points -= 10;
             }
             // If out of window then die
-            if((*i).isOutOfWindow() && !coltestLock){
+            if((*i).isOutOfWindow()){
+                mutex.lock();
                 i = m_enemies.erase(i);
                 m_enemies.swap(m_enemies);
+                mutex.unlock();
                 continue;
             }
             // If a enemy is hit play explosion animation then die.
-            if(((*i).isExplosion()) && !(*i).playExplodeAnimate() && !coltestLock){
+            if(((*i).isExplosion()) && !(*i).playExplodeAnimate()){
                 // IMPORTANT: Method erase() returns the next iterator
                 // To pass the next iterator to var i will prevent from operating wild pointer.
+                mutex.lock();
                 i = m_enemies.erase(i);
                 m_enemies.swap(m_enemies);
+                mutex.unlock();
             } else {
                 m_window->draw(*i);
                 i++;
@@ -129,10 +136,10 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
-            if(!coltestLock){
-                i = m_bombs.erase(i);
-                m_bombs.swap(m_bombs);
-            }
+            mutex.lock();
+            i = m_bombs.erase(i);
+            m_bombs.swap(m_bombs);
+            mutex.unlock();
         }
     }
 
@@ -146,14 +153,10 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
-            if(!coltestLock){
-                i = m_bonus_life.erase(i);
-                m_bonus_life.swap(m_bonus_life);
-            }
+            i = m_bonus_life.erase(i);
+            m_bonus_life.swap(m_bonus_life);
         }
     }
-    elementsLock = false;
-    //std::cout << "Stage::draw::elLock: " << elementsLock << endl;
 }
 
 int Stage::getValueByLevel(int count, ...){
@@ -176,11 +179,7 @@ void Stage::collisionTest(){
         //std::cout << "FPS: " << (now - before) * 10);
         //std::cout << "bombs: " << getBombCount() << ";enemies: " << getEnemyCount() << ";bonus: " << getBonusCount() << endl;
         sf::sleep(sf::milliseconds(100));
-        if(elementsLock){
-            continue;
-        }
-        coltestLock = true;
-        //std::cout<<"ColTest: elLock: " << elementsLock << "\t" << endl;
+        mutex.lock();
         for(std::vector<Enemy>::iterator e = m_enemies.begin(); e != m_enemies.end(); ++e){
             if(m_enemies.size() == 0){
                 break;
@@ -236,7 +235,7 @@ void Stage::collisionTest(){
                 }
             }
         }
-        coltestLock = false;
+        mutex.unlock();
     }
 }
 

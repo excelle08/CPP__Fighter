@@ -158,16 +158,14 @@ int main()
 void generateEnemy(Stage *stage){
     std::srand(std::time(0));
     while(true){
-        if(stage->getElementsLock()){
-            continue;
-        }
         int random_var = std::rand();
         Enemy e(sf::Vector2f(random_var%400, 0));
         e.setVelocity(sf::Vector2f(0,stage->getEnemySpeed()));
+        // Lock resource for thread safety
         stage->addEnemy(e);
         // When level is greater than 2, launch bomb randomly
         if(stage->getLevel() >= 2 && stage->getLevel() <= 5 && random_var % 2 == 0){
-            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*1.5), TextureLib::bomb_enemy);
+            Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2), TextureLib::bomb_enemy);
             b.setColor(sf::Color::Red);
             stage->addBomb(b);
         } else if (stage->getLevel() >= 6 && random_var % 3 != 0){
