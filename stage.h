@@ -46,8 +46,7 @@ public:
 		level = 1;
 		allowSoundEffect = true;
 		framecount = 0;
-		elementsLock = false;
-		coltestLock = false;
+
 	}
 	virtual ~Stage(){
 	
@@ -142,13 +141,10 @@ public:
 	int getBonusCount(){
 		return m_bonus_life.size();
 	}
-	bool getElementsLock(){
-		return elementsLock;
-	}
 	void reset();
 	void collisionTest();
 	void drawMessage(string msg, sf::Vector2f position = sf::Vector2f(10, 240), int fontSize=24, sf::Color color = sf::Color::Black);
-
+	sf::Mutex mutex;
 private:
 	void drawProperties();
 	int getValueByLevel(int count, ...);
@@ -173,8 +169,6 @@ private:
 	int maxBomb;
 	int gameStatus;
 	bool allowSoundEffect;
-	bool elementsLock;
-	bool coltestLock;
 	unsigned long int framecount;
 
 };
