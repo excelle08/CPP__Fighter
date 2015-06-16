@@ -63,13 +63,13 @@ protected:
     Stage *__stage__;
     sf::Texture m_texture;
     bool isAlive;
+    bool isBoomed;
 private:
 	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
     
     sf::Vector2f m_position;
     string __type__;
     bool listenKeyEvent;
-    bool isBoomed;
 };
 
 #endif // MYOBJECT_H

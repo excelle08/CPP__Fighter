@@ -16,14 +16,6 @@ MyObject::MyObject(string textureFilePath, sf::Vector2f objPosition, string type
 	m_position = objPosition;
 }
 
-/*
-void MyObject::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-	states.transform *= getTransform();
-	states.texture = &m_texture;
-	target.draw(m_sprite, states);
-}
-*/
-
 bool MyObject::isOutOfWindow(){
 	if(getPosition().x < 0 || getPosition().x + getObjSize().x > __stage__->getWindowSize().x || 
 		getPosition().y < 0 || getPosition().y + getObjSize().y > __stage__->getWindowSize().y ){

@@ -1,5 +1,5 @@
-main: main.o stage.o shuttle.o myobject.o bomb.o enemy.o
-	g++ -o main main.o stage.o shuttle.o myobject.o bomb.o enemy.o -O3 \
+main: main.o stage.o shuttle.o myobject.o bomb.o enemy.o super.o
+	g++ -o main main.o stage.o shuttle.o myobject.o bomb.o enemy.o super.o -O3 \
 	-framework sfml-window -framework sfml-graphics -framework sfml-system -framework sfml-audio -std=c++11\
 	#&& rm main.o shuttle.o myobject.o
 
@@ -20,6 +20,9 @@ bomb.o: bomb.cpp bomb.h
 
 enemy.o: enemy.cpp enemy.h
 	g++ -c enemy.cpp -O3
+
+super.o: super.cpp super.h
+	g++ -c super.cpp -O3
 
 clean:
 	rm -rf *.o main

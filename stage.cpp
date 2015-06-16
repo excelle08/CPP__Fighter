@@ -8,8 +8,8 @@ void Stage::setHero(Shuttle *hero){
 }
 
 void Stage::addEnemy(Enemy e){
-    e.setStage(this);
     mutex.lock();
+    e.setStage(this);
     m_enemies.push_back(e);
     mutex.unlock();
 }
@@ -18,17 +18,24 @@ void Stage::addBomb(Bomb b){
     if(avaliableBomb <= 0){
         return;
     }
-    b.setStage(this);
     mutex.lock();
+    b.setStage(this);
     m_bombs.push_back(b);
     mutex.unlock();
     avaliableBomb --;
 }
 
 void Stage::addLifeBonus(BonusLife b){
-    b.setStage(this);
     mutex.lock();
+    b.setStage(this);
     m_bonus_life.push_back(b);
+    mutex.unlock();
+}
+
+void Stage::addSuper(Super s){
+    mutex.lock();
+    s.setStage(this);
+    m_super.push_back(s);
     mutex.unlock();
 }
 
@@ -99,9 +106,9 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
-            if(level >= 7 && (!(*i).isExplosion())){
+            if((!(*i).isExplosion())){
                // After level 7, every missed enemy costs 10 points
-               points -= 10;
+               points -= 10 * level;
             }
             // If out of window then die
             if((*i).isOutOfWindow()){
@@ -153,8 +160,30 @@ void Stage::drawProperties(){
             m_window->draw(*i);
             i++;
         } else {
+            mutex.lock();
             i = m_bonus_life.erase(i);
             m_bonus_life.swap(m_bonus_life);
+            mutex.unlock();
+        }
+    }
+
+    // Draw super shuttles
+    for(std::vector<Super>::iterator i = m_super.begin(); i != m_super.end();){
+        if(m_super.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_super.erase(i);
+            if((*i).isExplosion()){
+                points += 250;
+            }
+            m_super.swap(m_super);
+            mutex.unlock();
         }
     }
 }
@@ -201,10 +230,11 @@ void Stage::collisionTest(){
                     e->kill(true);
                     b->kill();
                 }
+
                 // Bombs and shuttle
                 sf::Vector2u size_h = hero->getObjSize();
                 sf::Vector2f pos_h = hero->getPosition();
-                if( (b->getSrcType() == "Enemy") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
+                if( (b->getSrcType() != "Shuttle") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
                     playDamageEffect();
                     hero->kill();
                     b->kill();
@@ -226,11 +256,26 @@ void Stage::collisionTest(){
                 sf::Vector2u size_e = bn->getObjSize();
                 sf::Vector2f pos_e = bn->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
-                // Collision test between bombs and enemies
                 if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
                     hero->addLife();
                     playBoomEffect();
                     bn->kill(true);
+                    b->kill();
+                }
+            }
+            for(std::vector<Super>::iterator s = m_super.begin(); s != m_super.end(); ++s){
+                if(m_super.size() == 0){
+                    break;
+                }
+                if(!(*s).getLifeState()){
+                    continue;
+                }
+                sf::Vector2u size_e = s->getObjSize();
+                sf::Vector2f pos_e = s->getPosition();
+                sf::Vector2f pos_b = b->getPosition();
+                if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                    playBoomEffect();
+                    s->kill(true);
                     b->kill();
                 }
             }
@@ -251,7 +296,9 @@ void Stage::reset(){
     level = 1;
     m_bombs.clear();
     m_enemies.clear();
-    hero->setLife(20);
+    m_bonus_life.clear();
+    m_super.clear();
+    hero->setLife(50);
 }
 
 void Stage::drawMessage(string msg, sf::Vector2f position, int fontSize, sf::Color color){
