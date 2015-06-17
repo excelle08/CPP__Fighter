@@ -57,7 +57,6 @@ void Stage::loadFrame(){
     m_window->display();
     unsigned int end = c.getElapsedTime().asMilliseconds();
     fps = 1000 / (end - start);
-    framecount ++;
 }
 
 void Stage::playBackMusic(){
