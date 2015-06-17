@@ -19,7 +19,7 @@ public:
 			isAlive = false;
 			
 		}
-		life --;
+		life -= 5;
 	}
 	int getLife(){
 		return life;

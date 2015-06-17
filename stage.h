@@ -55,7 +55,8 @@ public:
 	}
 	void setHero(Shuttle *hero);
 	void addEnemy(Enemy e);
-	void addBomb(Bomb b);
+	void addBomb(Bomb &b);
+	void addBomb_e(Bomb &b);
 	void addLifeBonus(BonusLife b);
 	void addSuper(Super s);
 	void loadFrame();
@@ -135,6 +136,9 @@ public:
 	unsigned long int getFrameCount(){
 		return framecount;
 	}
+	unsigned int getFrameRate(){
+		return fps;
+	}
 	int getBombCount(){
 		return m_bombs.size();
 	}
@@ -155,6 +159,7 @@ private:
 	sf::RenderWindow *m_window;
 	std::vector<Enemy> m_enemies;
  	std::vector<Bomb> m_bombs;
+ 	std::vector<Bomb> m_bombs_e;
  	std::vector<BonusLife> m_bonus_life;
  	std::vector<Super> m_super;
  	int points;
@@ -174,6 +179,7 @@ private:
 	int gameStatus;
 	bool allowSoundEffect;
 	unsigned long int framecount;
+	unsigned int fps;
 
 };
 

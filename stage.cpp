@@ -14,15 +14,22 @@ void Stage::addEnemy(Enemy e){
     mutex.unlock();
 }
 
-void Stage::addBomb(Bomb b){
+void Stage::addBomb(Bomb &b){
     if(avaliableBomb <= 0){
         return;
     }
-    mutex.lock();
     b.setStage(this);
+    mutex.lock();
     m_bombs.push_back(b);
     mutex.unlock();
     avaliableBomb --;
+}
+
+void Stage::addBomb_e(Bomb &b){
+    mutex.lock();
+    b.setStage(this);
+    m_bombs_e.push_back(b);
+    mutex.unlock();
 }
 
 void Stage::addLifeBonus(BonusLife b){
@@ -41,11 +48,15 @@ void Stage::addSuper(Super s){
 
 void Stage::loadFrame(){
 	// Clear previous frame
+    sf::Clock c;
+    unsigned int start = c.getElapsedTime().asMilliseconds();
 	m_window->clear();
     // Draw stage properties
     drawProperties();
     // Display and finish this frame
     m_window->display();
+    unsigned int end = c.getElapsedTime().asMilliseconds();
+    fps = 1000 / (end - start);
     framecount ++;
 }
 
@@ -150,6 +161,23 @@ void Stage::drawProperties(){
         }
     }
 
+    for(std::vector<Bomb>::iterator i = m_bombs_e.begin(); i != m_bombs_e.end();){
+        if(m_bombs_e.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).reloadTexture();
+            (*i).shoot();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_bombs_e.erase(i);
+            m_bombs_e.swap(m_bombs_e);
+            mutex.unlock();
+        }
+    }
+
     // Draw life-point bonus
     for(std::vector<BonusLife>::iterator i = m_bonus_life.begin(); i != m_bonus_life.end();){
         if(m_bonus_life.size() == 0){
@@ -205,8 +233,6 @@ int Stage::getValueByLevel(int count, ...){
 
 void Stage::collisionTest(){
     while(true){
-        //std::cout << "FPS: " << (now - before) * 10);
-        //std::cout << "bombs: " << getBombCount() << ";enemies: " << getEnemyCount() << ";bonus: " << getBonusCount() << endl;
         sf::sleep(sf::milliseconds(100));
         mutex.lock();
         for(std::vector<Enemy>::iterator e = m_enemies.begin(); e != m_enemies.end(); ++e){
@@ -224,21 +250,26 @@ void Stage::collisionTest(){
                 sf::Vector2f pos_e = e->getPosition();
                 sf::Vector2f pos_b = b->getPosition();
                 // Collision test between bombs and enemies
-                if( (b->getSrcType() == "Shuttle") && (pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
+                if((pos_e.x <= pos_b.x && pos_e.x + size_e.x >= pos_b.x) && (pos_e.y + size_e.y >= pos_b.y && pos_e.y <= pos_b.y)) {
                     points += 20;
                     playBoomEffect();
                     e->kill(true);
                     b->kill();
                 }
-
-                // Bombs and shuttle
-                sf::Vector2u size_h = hero->getObjSize();
-                sf::Vector2f pos_h = hero->getPosition();
-                if( (b->getSrcType() != "Shuttle") && (pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
-                    playDamageEffect();
-                    hero->kill();
-                    b->kill();
-                }
+            }
+        }
+        for(std::vector<Bomb>::iterator b = m_bombs_e.begin(); b != m_bombs_e.end(); ++b){
+            if(m_bombs_e.size() == 0){
+                break;
+            }
+            // Bombs and shuttle
+            sf::Vector2f pos_b = b->getPosition();
+            sf::Vector2u size_h = hero->getObjSize();
+            sf::Vector2f pos_h = hero->getPosition();
+            if((pos_h.x <= pos_b.x && pos_h.x + size_h.x >= pos_b.x) && (pos_h.y + size_h.y >= pos_b.y && pos_h.y <= pos_b.y)){
+                playDamageEffect();
+                hero->kill();
+                b->kill();
             }
         }
         // Collision test between bonus object and bomb

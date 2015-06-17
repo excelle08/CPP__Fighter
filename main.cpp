@@ -124,6 +124,9 @@ int main()
                 if(stage.getPlaneLife() <= 0 || stage.getPoints() <= 0){
                     stage.setGameStatus(GAMEOVER);
                 }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+                    stage.setGameStatus(STANDBY);
+                }
             }
         } else if (stage.getGameStatus() == INFINIE){
             stage.loadFrame();
@@ -151,6 +154,9 @@ int main()
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
                     plane.Move(0, p_spd);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+                    stage.setGameStatus(STANDBY);
                 }
             }
         } else if (stage.getGameStatus() == HELPMSG){
@@ -211,11 +217,11 @@ void generateEnemy(Stage *stage){
         if(stage->getLevel() >= 2 && stage->getLevel() <= 5 && random_var % 2 == 0){
             Bomb b(e, sf::Vector2f(0, stage->getBombSpeed()*2), TextureLib::bomb_enemy);
             b.setColor(sf::Color::Red);
-            stage->addBomb(b);
+            stage->addBomb_e(b);
         } else if (stage->getLevel() >= 6 && random_var % 3 != 0){
             Bomb b(e, getVelocityVect(e.getPosition(), stage->getHeroPos(), stage->getBombSpeed()*1.5), TextureLib::bomb_enemy);
             b.setColor(sf::Color::Yellow);
-            stage->addBomb(b);
+            stage->addBomb_e(b);
         }
         // Update time
         sf::sleep(sf::milliseconds(1000 * ( ( 800 / stage->getEnemySpeed() ) / 60 ) / stage->getEnemyGenRate()));
@@ -252,7 +258,7 @@ void timer(Stage *stage){
         ss << "Life: ";
         ss << stage->getPlaneLife() << endl;
         ss << "FPS: ";
-        ss << (now - before) * (1000 / stage->getShootingRate());
+        ss << stage->getFrameRate();
         score_str = ss.str();
         stage->setScoreText(score_str);
 
