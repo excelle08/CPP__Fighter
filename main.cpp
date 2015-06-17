@@ -243,11 +243,9 @@ void timer(Stage *stage){
     while(true){
         // TODO: Add timing funcs
         stage->increAvaliableBomb();
-        unsigned long int before = stage->getFrameCount();
         // Update time
         sf::sleep(sf::milliseconds(stage->getShootingRate()));
         // Draw text
-        unsigned long int now = stage->getFrameCount();
         using namespace std;
         stringstream ss;
         string score_str;

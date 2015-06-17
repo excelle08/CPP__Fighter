@@ -47,8 +47,6 @@ public:
 		points = 50;
 		level = 1;
 		allowSoundEffect = true;
-		framecount = 0;
-
 	}
 	virtual ~Stage(){
 	
@@ -133,9 +131,6 @@ public:
 	void enableSoundEffect(){
 		allowSoundEffect = true;
 	}
-	unsigned long int getFrameCount(){
-		return framecount;
-	}
 	unsigned int getFrameRate(){
 		return fps;
 	}
@@ -178,7 +173,6 @@ private:
 	int maxBomb;
 	int gameStatus;
 	bool allowSoundEffect;
-	unsigned long int framecount;
 	unsigned int fps;
 
 };
