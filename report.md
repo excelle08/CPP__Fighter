@@ -6,6 +6,7 @@ This is a single-user game intended for people who are idle to kill time
 ### Features
 1. Normal mode
 2. Infinite mode where there is no life point limit.
+
 ### Game rules
 1. Move your plane with direction keys
 2. Press Space key to launch (blue) bombs, the frequency of bomb outputting increases as your level goes up. Every bomb costs you 5 points.
@@ -51,11 +52,137 @@ Normally compiler would output a executable called `main`, just run it.
 7. Shuttle     - The plane players to control
 8. Super       - The Super Enemy
 
+#### Part of code
+```
+// stage.cpp
+// Draw objects on window for every frame
+
+void Stage::drawProperties(){
+	// Draw background
+    m_window->draw(*m_bg);
+    // Draw hero
+    m_window->draw(*hero);
+    // Draw score text
+    m_window->draw(score);
+    // Draw and move enemy shuttles
+    for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end();){
+        if(m_enemies.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            if((!(*i).isExplosion())){
+               // After level 7, every missed enemy costs 10 points
+               points -= 10 * level;
+            }
+            // If out of window then die
+            if((*i).isOutOfWindow()){
+                mutex.lock();
+                i = m_enemies.erase(i);
+                m_enemies.swap(m_enemies);
+                mutex.unlock();
+                continue;
+            }
+            // If a enemy is hit play explosion animation then die.
+            if(((*i).isExplosion()) && !(*i).playExplodeAnimate()){
+                // IMPORTANT: Method erase() returns the next iterator
+                // To pass the next iterator to var i will prevent from operating wild pointer.
+                mutex.lock();
+                i = m_enemies.erase(i);
+                m_enemies.swap(m_enemies);
+                mutex.unlock();
+            } else {
+                m_window->draw(*i);
+                i++;
+            }
+        }
+    }
+    // Draw and move bombs
+    for(std::vector<Bomb>::iterator i = m_bombs.begin(); i != m_bombs.end();){
+        if(m_bombs.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).reloadTexture();
+            (*i).shoot();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_bombs.erase(i);
+            m_bombs.swap(m_bombs);
+            mutex.unlock();
+        }
+    }
+
+    for(std::vector<Bomb>::iterator i = m_bombs_e.begin(); i != m_bombs_e.end();){
+        if(m_bombs_e.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).reloadTexture();
+            (*i).shoot();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_bombs_e.erase(i);
+            m_bombs_e.swap(m_bombs_e);
+            mutex.unlock();
+        }
+    }
+
+    // Draw life-point bonus
+    for(std::vector<BonusLife>::iterator i = m_bonus_life.begin(); i != m_bonus_life.end();){
+        if(m_bonus_life.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_bonus_life.erase(i);
+            m_bonus_life.swap(m_bonus_life);
+            mutex.unlock();
+        }
+    }
+
+    // Draw super shuttles
+    for(std::vector<Super>::iterator i = m_super.begin(); i != m_super.end();){
+        if(m_super.size() == 0){
+            break;
+        }
+        if((*i).getLifeState()){
+            (*i).animate();
+            m_window->draw(*i);
+            i++;
+        } else {
+            mutex.lock();
+            i = m_super.erase(i);
+            if((*i).isExplosion()){
+                points += 250;
+            }
+            m_super.swap(m_super);
+            mutex.unlock();
+        }
+    }
+}
+```
+
+For the complete source code, please go to this github repository.
+
 #### Relation of classes (UML)
 ![UML](https://github.com/excelle08/CPP__Fighter/blob/master/fighter_uml.png?raw=true)
 
 ## Performance & Effectiveness
 ### Running screenshot
+
+![Screenshot]()
 
 ### Performance
 The game usually runs at a stable framerate about 60, and there is no apparent lagging.
@@ -65,3 +192,13 @@ The single output executable file `main` is 129K, with all resources will take 2
 All source code adds up to 1,287 lines.
 
 ## Comments
+
+It's fun to play~
+
+## Conclusion
+
+1. Object-oriented programming
+2. Use of graphics library
+3. To deal with segmentation fault
+4. Multithreading programming
+5. Makefile
