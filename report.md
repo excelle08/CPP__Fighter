@@ -19,6 +19,7 @@ This is a single-user game intended for people who are idle to kill time
 10. Super enemy would be generated every 20 seconds, flying down slowly.
 11. Super enemy has 20 life points, and you have to hit several times to kill it. It will also randomly launch bombs towards your plane.
 12. Life points bonus will be generated every 9 seconds. If you get to hit it, you get 5 extra life points.
+
 ## Program structure
 ### Development environment
 Operating system: `OS X 10.10.3`
