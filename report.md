@@ -52,7 +52,7 @@ Normally compiler would output a executable called `main`, just run it.
 8. Super       - The Super Enemy
 
 #### Relation of classes (UML)
-![UML](https://github.com/excelle08/CPP__Fighter/blob/master/fighter_uml.svg)
+![UML](https://github.com/excelle08/CPP__Fighter/blob/master/fighter_uml.png?raw=true)
 
 ## Performance & Effectiveness
 ### Running screenshot
