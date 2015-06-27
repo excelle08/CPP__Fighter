@@ -29,11 +29,13 @@ Complier: `Apple LLVM version 6.1.0 (clang-602.0.53)`
 Graphics library: `SFML 2.3`
 
 Development tools: `Sublime Text 2`
+
 ### Building procedure
 #### Install dependencies
 1. Download and unpack the SFML library consistent with your compiling environment(For experiment environment is Mac OS X)
 2. Copy files to the correspoinding library directories
 3. If you intend to use IDE, you may need to config your IDE in reference to the tutorial on SFML official website.
+
 #### Compile in terminal
 Open your terminal, go to this diretory and use `make` to compile the source code.
 
@@ -48,7 +50,9 @@ Normally compiler would output a executable called `main`, just run it.
 6. MyObject    - A basic class for all entities
 7. Shuttle     - The plane players to control
 8. Super       - The Super Enemy
-#### Relationships of classes
+
+#### Relation of classes (UML)
+![UML](fighter_uml.svg)
 
 ## Performance & Effectiveness
 ### Running screenshot
@@ -57,5 +61,7 @@ Normally compiler would output a executable called `main`, just run it.
 The game usually runs at a stable framerate about 60, and there is no apparent lagging.
 
 The single output executable file `main` is 129K, with all resources will take 2.2 MB.
+
+All source code adds up to 1,287 lines.
 
 ## Comments
