@@ -182,7 +182,7 @@ For the complete source code, please go to this github repository.
 ## Performance & Effectiveness
 ### Running screenshot
 
-![Screenshot]()
+![Screenshot](https://github.com/excelle08/CPP__Fighter/blob/master/screenshot.png?raw=true)
 
 ### Performance
 The game usually runs at a stable framerate about 60, and there is no apparent lagging.

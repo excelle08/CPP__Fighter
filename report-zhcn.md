@@ -230,7 +230,7 @@ void Stage::drawProperties(){
 ## 测试·程序性能
 ### 运行截图
 
-![Screenshot]()
+![Screenshot](https://github.com/excelle08/CPP__Fighter/blob/master/screenshot.png?raw=true)
 
 ### 性能
 游戏稳定的运行在60fps左右，没有明显的卡顿
